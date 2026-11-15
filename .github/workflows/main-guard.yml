@@ -1,0 +1,42 @@
+name: Main-vagt
+
+# Sikkerhedsnet: opdager hvis noget lander på main UDEN en pull request.
+# Med rulesettet slået til kan det ikke ske. Uden (gratis privat repo) er dette alarmen.
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  pull-requests: read
+  issues: write
+
+jobs:
+  guard:
+    name: Kom ændringen gennem en PR?
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - uses: actions/github-script@v9
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const sha = context.sha;
+            const { data: prs } = await github.rest.repos.listPullRequestsAssociatedWithCommit({ owner, repo, commit_sha: sha });
+            if (prs.some((pr) => pr.merged_at && pr.base.ref === 'main')) {
+              core.info('OK: commit kom fra en merget pull request.');
+              return;
+            }
+            const title = `Direkte push til main: ${sha.slice(0, 7)}`;
+            await github.rest.issues.create({
+              owner, repo, title,
+              body: [
+                `Commit ${sha} af @${context.actor} landede på \`main\` uden en pull request.`,
+                '',
+                'Det skal ikke kunne ske. Gør dette:',
+                '1. Tjek at ændringen er i orden (eller lav en revert-PR).',
+                '2. Slå rulesettet til: se `.github/rulesets/README.md`.',
+              ].join('\n'),
+            });
+            core.setFailed(title);

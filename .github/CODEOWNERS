@@ -1,0 +1,23 @@
+# Hvem SKAL godkende ændringer i de farlige dele af repoet.
+# Alt andet kan godkendes af hvem som helst på holdet.
+#
+# FØRSTE DAG: opret GitHub-teamet "erfarne" i organisationen (de 2-3 med mest erfaring),
+# og ret "treatr" herunder til organisationens rigtige navn. Den sidste regel, der matcher, vinder.
+
+# Database: migrationer, RLS og tests af dem
+/supabase/migrations/   @treatr/erfarne
+/supabase/config.toml   @treatr/erfarne
+/tests/db/              @treatr/erfarne
+/scripts/               @treatr/erfarne
+
+# Kode der bruger service_role-nøglen (går uden om RLS)
+/src/lib/supabase/      @treatr/erfarne
+/src/app/c/             @treatr/erfarne
+
+# Spillereglerne selv: CI, rulesets, hooks og agent-regler
+/.github/               @treatr/erfarne
+/.claude/               @treatr/erfarne
+/AGENTS.md              @treatr/erfarne
+/CLAUDE.md              @treatr/erfarne
+/lefthook.yml           @treatr/erfarne
+/.env.example           @treatr/erfarne

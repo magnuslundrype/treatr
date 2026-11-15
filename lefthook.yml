@@ -1,0 +1,28 @@
+# Lokale git-hooks. Installeres automatisk af `npm install` (lefthook).
+# De fanger fejl FØR de rammer GitHub. CI tjekker det samme igen, så hooks er hjælp, ikke sikkerhed.
+
+pre-commit:
+  parallel: true
+  commands:
+    ikke-paa-main:
+      run: node scripts/hooks/not-on-main.mjs
+    format:
+      glob: "*.{ts,tsx,js,mjs,cjs,json,md,css,yml,yaml}"
+      exclude:
+        - "input/**"
+        - ".claude/skills/**"
+        - "package-lock.json"
+      run: npx prettier --write --ignore-unknown {staged_files}
+      stage_fixed: true
+    lint:
+      glob: "src/**/*.{ts,tsx,js,mjs}"
+      run: npx eslint {staged_files}
+
+pre-push:
+  commands:
+    ikke-paa-main:
+      run: node scripts/hooks/not-on-main.mjs
+    typecheck:
+      run: npm run typecheck
+    test:
+      run: npm test

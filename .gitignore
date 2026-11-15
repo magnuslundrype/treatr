@@ -1,3 +1,26 @@
+# dependencies
 node_modules
+
+# next.js / vercel
+.next/
+out/
+.vercel
+next-env.d.ts
+*.tsbuildinfo
+
+# test
+coverage
+
+# secrets: aldrig i git. Brug .env.example som skabelon.
 .env*
 !.env.example
+*.pem
+
+# supabase
+supabase/.branches
+supabase/.temp
+
+# misc
+.DS_Store
+npm-debug.log*
+.claude/settings.local.json

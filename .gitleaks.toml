@@ -1,0 +1,8 @@
+# Regler for secrets-scanningen i CI (gitleaks). Vi bruger standardreglerne
+# og springer kun over tredjeparts-dokumentation, som indeholder kodeeksempler.
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Installerede skills og kildemateriale (tredjeparts-dokumentation, ikke vores kode)"
+paths = ['''^\.claude/skills/''', '''^input/''']

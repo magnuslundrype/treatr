@@ -1,0 +1,10 @@
+.next
+node_modules
+package-lock.json
+input
+.claude/skills
+supabase/.temp
+supabase/config.toml
+src/lib/database.types.ts
+PROMPT.md
+AGENTS.md

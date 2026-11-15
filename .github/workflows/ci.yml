@@ -1,0 +1,108 @@
+name: CI
+
+# Kører på alle pull requests og på main. Mål: under 5 minutter.
+# De tre job kører samtidig. Jobbet "CI" til sidst er det eneste, rulesettet kræver.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  app:
+    name: Typecheck, lint, format, test
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+        env:
+          CI: "true"
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm run format:check
+      - run: npm test
+
+  database:
+    name: Migrationer og RLS
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_PASSWORD: x
+        ports:
+          - 55432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 2s
+          --health-timeout 5s
+          --health-retries 15
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Eksisterende migrationer må ikke ændres
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          changed=$(git diff --name-status "$BASE_SHA"...HEAD -- supabase/migrations | grep -v '^A' || true)
+          if [ -n "$changed" ]; then
+            echo "::error::En migration, der allerede ligger på main, er ændret, omdøbt eller slettet. Lav en ny migration i stedet (npx supabase migration new <navn>)."
+            echo "$changed"
+            exit 1
+          fi
+      - name: Migrationer + seed + RLS-tests på en tom database
+        run: bash scripts/db-test.sh
+        env:
+          TEST_DATABASE_URL: postgresql://postgres:x@localhost:55432/postgres
+
+  security:
+    name: Secrets og afhængigheder
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Ingen secrets i git (gitleaks)
+        run: |
+          docker run --rm -v "$PWD:/repo" ghcr.io/gitleaks/gitleaks:v8.30.1 \
+            git /repo --redact --no-banner --exit-code 1
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+      - name: Kendte alvorlige sårbarheder i det, vi sender i produktion
+        run: npm audit --omit=dev --audit-level=high
+
+  ci:
+    name: CI
+    if: always()
+    needs: [app, database, security]
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    steps:
+      - name: Alle tjek skal være grønne
+        env:
+          RESULTS: ${{ join(needs.*.result, ' ') }}
+        run: |
+          echo "Resultater: $RESULTS"
+          for r in $RESULTS; do
+            if [ "$r" != "success" ]; then
+              echo "::error::Mindst ét tjek fejlede. Åbn det røde job ovenfor og læs den sidste fejl."
+              exit 1
+            fi
+          done
