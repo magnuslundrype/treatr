@@ -24,3 +24,10 @@ supabase/.temp
 .DS_Store
 npm-debug.log*
 .claude/settings.local.json
+
+# Arkitektur-kørslens filer
+/input/
+/PROMPT.md
+/REPORT.md
+/DONE
+/start.sh
