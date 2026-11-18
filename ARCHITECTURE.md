@@ -234,7 +234,7 @@ Diagram og forklaring står i [docs/erd.md](docs/erd.md). De bærende idéer:
   sagde ja. Viewet `upsell_performance` viser, hvad der virker pr. service og tidspunkt.
 - **GDPR.** `purge_expired_guest_data()` anonymiserer gæster efter fristen. Audit-loggen gemmer
   aldrig gæstens fritekst (ADR-0009).
-- **Home Assistant.** `devices` og `home_events` findes, men intet skriver til dem endnu (ADR-0013).
+- **Home Assistant.** `devices` og `home_events` findes, men intet skriver til dem endnu (ADR-0013). Hardwaren i piloten er Pi som hub, iPad og Jabra i villaen, Mac mini som back office (ADR-0015).
 
 ## Det springer vi bevidst over
 
