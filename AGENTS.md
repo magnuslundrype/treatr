@@ -1,7 +1,6 @@
 # Treatr: regler for AI-agenter
 
-Treatr er en AI-butler til luksusvillaer: gæsten taler med butleren, Hermes koordinerer
-back office og eskalerer kun det, den ikke selv kan, leverandøren bekræfter via et link. Overblik: `ARCHITECTURE.md`.
+Treatr er en AI-butler til luksusvillaer: gæsten taler med butleren, Hermes koordinerer back office og eskalerer kun det, den ikke selv kan, et menneske godkender med to tryk, og leverandøren bekræfter via et link. Overblik: `ARCHITECTURE.md`.
 Fagord: `GLOSSARY.md`. Beslutninger: `docs/adr/`. Hold denne fil kort; detaljer hører til i de filer.
 
 ## Fire grundregler

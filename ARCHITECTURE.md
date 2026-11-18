@@ -1,7 +1,6 @@
 # Treatr: arkitektur
 
-Treatr er en AI-butler til luksusvillaer. Gæsten taler med butleren, Hermes koordinerer back
-office og eskalerer kun det, den ikke selv kan, og leverandøren bekræfter via et link uden login.
+Treatr er en AI-butler til luksusvillaer. Gæsten taler med butleren, Hermes koordinerer back office og eskalerer kun det, den ikke selv kan, et menneske godkender med to tryk, og leverandøren bekræfter via et link uden login.
 
 Dette dokument er overblikket. Detaljerne ligger her:
 
@@ -21,16 +20,16 @@ Dette dokument er overblikket. Detaljerne ligger her:
 Otte åbne spørgsmål om idéen, og det svar vi har bygget på. Er et svar forkert, så ret det
 her og i den ADR, der nævnes. De fleste kan ændres uden at røre datamodellen.
 
-| #   | Spørgsmål                                        | Antaget svar                                                                                                                                                                                                                                                             | Hvis det er forkert                                                                   |
-| --- | ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------- |
-| 1   | Hvordan taler gæsten med butleren?               | **Med stemmen, på mange sprog.** Det er produktets primære flade og wow-effekt (iPad i villaen og web-app via QR). Skrift er sekundært. Stemme-stacken vælges i Spanien.                                                                                                 | `conversations.channel` har allerede `whatsapp`, `sms`, `email` og `tablet`.          |
-| 2   | Er "to tryk" én person eller to?                 | Én person, to bevidste tryk (Godkend, derefter Bekræft). En organisation kan kræve to forskellige personer.                                                                                                                                                              | Sæt `organizations.require_two_approvers = true`.                                     |
-| 3   | Hvad skal godkendes?                             | **Kun det, Hermes eskalerer.** Hermes koordinerer back office og håndterer selv det, den kan. Den eskalerer til et menneske, når den ikke kan (fx uden for kataloget, klager, nye leverandører, afvigende pris). Grænsen for, hvad Hermes må selv, fastlægges i Spanien. | ADR-0014. Indtil koden er ændret, kræver databasen stadig to tryk (ADR-0007).         |
-| 4   | Hvordan bekræfter leverandøren?                  | Får et link på WhatsApp, SMS eller mail. Siden viser opgaven og to knapper: ja og nej. Linket virker én gang og udløber efter 72 timer. Ringer leverandøren, kan back office registrere svaret.                                                                          | Udløb er en parameter til `issue_confirmation_link`.                                  |
-| 5   | Hvordan betaler gæsten?                          | Uden for systemet i piloten (faktura eller overførsel). Vi registrerer beløb, status og provision, men flytter ingen penge.                                                                                                                                              | `payments.provider` er klar til en betalingsudbyder.                                  |
-| 6   | Hvordan sættes priser?                           | Fast pris pr. service i EUR, som kan overstyres pr. villa. Ingen dynamisk prissætning.                                                                                                                                                                                   | `villa_services.price_cents`.                                                         |
-| 7   | Deler organisationer leverandører?               | Nej. Hver organisation har sine egne leverandører og sit eget katalog. Leverandører har ikke login.                                                                                                                                                                      | Et fælles leverandørregister kræver en ny tabel og en ny ADR.                         |
-| 8   | Hvornår slettes gæstedata, og hvem har ansvaret? | Persondata anonymiseres 30 dage efter udtjekning. Beløb og bestillinger bliver uden navne. Husejeren eller bureauet er dataansvarlig, Treatr er databehandler.                                                                                                           | `organizations.guest_data_retention_days`. Få det bekræftet af en jurist før piloten. |
+| #   | Spørgsmål                                        | Antaget svar                                                                                                                                                                                                                                                                                                             | Hvis det er forkert                                                                   |
+| --- | ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------- |
+| 1   | Hvordan taler gæsten med butleren?               | **Med stemmen, på mange sprog.** Det er produktets primære flade og wow-effekt (iPad i villaen og web-app via QR). Skrift er sekundært. Stemme-stacken vælges i Spanien. Stemmeleverandøren gemmer samtalen hos sig. "Glemmer ved checkout" gælder først, når leverandørens opbevaring er sat, før en rigtig gæst taler. | `conversations.channel` har allerede `whatsapp`, `sms`, `email` og `tablet`.          |
+| 2   | Er "to tryk" én person eller to?                 | Én person, to bevidste tryk (Godkend, derefter Bekræft). En organisation kan kræve to forskellige personer.                                                                                                                                                                                                              | Sæt `organizations.require_two_approvers = true`.                                     |
+| 3   | Hvad skal godkendes?                             | **Et menneske godkender med to tryk.** Hermes koordinerer back office som `concierge` (forslag, leverandører, opfølgning) og eskalerer det, den ikke selv kan, men kan ikke godkende. Automatisk godkendelse af sikre kategorier bliver senere en regel i databasen.                                                     | ADR-0014. Indtil koden er ændret, kræver databasen stadig to tryk (ADR-0007).         |
+| 4   | Hvordan bekræfter leverandøren?                  | Får et link på WhatsApp, SMS eller mail. Siden viser opgaven og to knapper: ja og nej. Linket virker én gang og udløber efter 72 timer. Ringer leverandøren, kan back office registrere svaret.                                                                                                                          | Udløb er en parameter til `issue_confirmation_link`.                                  |
+| 5   | Hvordan betaler gæsten?                          | Uden for systemet i piloten (faktura eller overførsel). Vi registrerer beløb, status og provision, men flytter ingen penge.                                                                                                                                                                                              | `payments.provider` er klar til en betalingsudbyder.                                  |
+| 6   | Hvordan sættes priser?                           | Fast pris pr. service i EUR, som kan overstyres pr. villa. Ingen dynamisk prissætning.                                                                                                                                                                                                                                   | `villa_services.price_cents`.                                                         |
+| 7   | Deler organisationer leverandører?               | Nej. Hver organisation har sine egne leverandører og sit eget katalog. Leverandører har ikke login.                                                                                                                                                                                                                      | Et fælles leverandørregister kræver en ny tabel og en ny ADR.                         |
+| 8   | Hvornår slettes gæstedata, og hvem har ansvaret? | Persondata anonymiseres 30 dage efter udtjekning. Beløb og bestillinger bliver uden navne. Husejeren eller bureauet er dataansvarlig, Treatr er databehandler.                                                                                                                                                           | `organizations.guest_data_retention_days`. Få det bekræftet af en jurist før piloten. |
 
 Tekniske antagelser: Linear-holdets nøgle er `TRE` (opgaver hedder `TRE-123`). Butleren bruger
 Claude gennem Anthropics API fra serveren. Kode, tabeller og commits er på engelsk. Vejledninger
@@ -91,7 +90,7 @@ De vigtigste regler i tegningen:
   de gør, går gennem vores serverkode, som slår tokenet op. I databasen har rollen `anon` ingen
   rettigheder overhovedet (ADR-0006).
 - **AI'en kan kun foreslå.** Butleren laver kladder og forslag. Databasen nægter at sende en
-  AI-besked eller en bestilling videre uden to tryk fra et menneske (ADR-0007).
+  AI-besked eller en bestilling videre uden to tryk fra et menneske (ADR-0007). Det gælder også Hermes, som har rollen `concierge` (ADR-0014).
 - **Reglerne ligger i databasen**, ikke i hukommelsen: statusmaskine, godkendelse, engangs-token
   og adskillelse mellem organisationer er triggere, funktioner og RLS, som CI tester på hver PR.
 
@@ -188,11 +187,11 @@ med en besked om, hvad der mangler. Se ADR-0002, ADR-0003 og ADR-0004.
 
 ## Miljøer
 
-| Miljø      | App                             | Database                                          | Data                |
-| ---------- | ------------------------------- | ------------------------------------------------- | ------------------- |
-| Lokalt     | `npm run dev`                   | `npx supabase start` (Docker på din egen maskine) | `supabase/seed.sql` |
-| Preview    | Vercel-preview pr. pull request | Supabase preview branch pr. pull request (betalt) | `supabase/seed.sql` |
-| Produktion | Vercel, deployes fra `main`     | Supabase-projektet, migreres fra `main`           | Rigtige data        |
+| Miljø      | App                             | Database                                                                                           | Data                |
+| ---------- | ------------------------------- | -------------------------------------------------------------------------------------------------- | ------------------- |
+| Lokalt     | `npm run dev`                   | `npx supabase start` (Docker på din egen maskine)                                                  | `supabase/seed.sql` |
+| Preview    | Vercel-preview pr. pull request | Samme Supabase-projekt som produktion, indtil Supabase Pro er valgt. Ingen rigtige data i piloten. | `supabase/seed.sql` |
+| Produktion | Vercel, deployes fra `main`     | Supabase-projektet, migreres fra `main`                                                            | Rigtige data        |
 
 Der er ingen fælles "staging". En preview pr. PR gør det samme, uden at fem mennesker deler
 én database. Ingen har grund til at røre produktionsdata, og agenter bliver stoppet af en
@@ -284,7 +283,7 @@ Diagram og forklaring står i [docs/erd.md](docs/erd.md). De bærende idéer:
 1. **Gratis-planerne håndhæver ikke reglerne.** På et privat repo uden GitHub Team er rulesettet
    kun en fil. Uden Supabase Pro er der ingen preview branch pr. PR. Uden Vercel Pro kan holdet
    ikke deploye fra et privat organisations-repo. Det mindste, der gør main reelt beskyttet,
-   er GitHub Team til 20 USD om måneden. Se ADR-0002 og ADR-0003.
+   er GitHub Team til 20 USD om måneden. Se ADR-0002 og ADR-0003. Vercel Hobby deployer muligvis ikke kollegers commits (git author uden adgang til projektet). Testes onsdag med en kollegas PR, ikke Magnus'.
 2. **`service_role` går uden om RLS.** Gæstechatten, bekræftelsessiden og butleren kører på
    serveren med en nøgle, der kan se alle organisationer. Én glemt `organization_id` i den
    kode kan vise én kundes data til en anden. Derfor: al sådan kode samles i `src/lib/supabase/`,
