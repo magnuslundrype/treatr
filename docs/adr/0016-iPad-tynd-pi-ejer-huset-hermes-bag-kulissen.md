@@ -38,12 +38,15 @@ Butleren sender det, den ikke kan, videre til Hermes og siger "jeg vender tilbag
 
 Når stemmemodellen kalder værktøjet "tænd lyset", udfører iPad'en kaldet mod Pi'en på husets netværk. Kommandoen går ikke ud af huset og ind igen, så lyset reagerer straks, også på en langsom forbindelse. Pi'ens API afviser alt, der ikke står på hvidlisten.
 
+iPad'en kører en https-side, så Pi'ens API skal svare på https med et gyldigt certifikat. Safari blokerer http og selvsignerede certifikater fra en https-side. Pi'en bruger `tailscale cert` (Let's Encrypt på `pi.<tailnet>.ts.net`, kræver at HTTPS er slået til i Tailscale-adminpanelet, gratis), og iPad'en er på tailnettet. På samme wifi er forbindelsen direkte, så kommandoen bliver i huset. Virker det ikke torsdag inden frokost, går værktøjskaldet via serveren, og Pi'en henter kommandoen fra Supabase Realtime (én migration: en device-rolle, spor A).
+
 ## Hvad kræver smart home på Pi'en
 
 Home Assistant kan installeres på Pi'en uden ekstra hardware og styrer straks alt, der taler wifi eller kabel: Shelly-relæer, mange wifi-stik og -pærer, Sonos, smart-tv, aircondition med wifi og Matter over wifi. Pi'ens Bluetooth dækker nogle Bluetooth-enheder.
 
 Ekstra hardware kræves kun til:
 
+- **Til demoen:** ét wifi-stik eller relæ (fx Shelly Plug S) og en lampe. Holdet tager det med onsdag. Villaens eget anlæg er ikke planen.
 - **Zigbee, Thread eller Z-Wave** (fx IKEA, Aqara, Hue uden bro): en USB-dongle.
 - **Stabil drift i en udlejningsvilla:** en SSD i stedet for SD-kort, officiel strømforsyning og kabel til routeren. Ikke nødvendigt til demoen.
 - **Villaens eksisterende anlæg** (fx KNX, Loxone, Lutron): Home Assistant har integrationer, men det kræver adgang til anlæggets gateway.

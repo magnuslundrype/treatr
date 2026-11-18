@@ -1,7 +1,8 @@
 # Plan for ugen i Spanien (18.-23. november 2026)
 
-Mål for ugen: **én bestilling hele vejen igennem** i en preview, fra gæstens besked til
-leverandørens bekræftelse, med to tryk i back office. Ikke pænt, men ægte.
+Mål for ugen: **én bestilling hele vejen igennem** i en preview, fra gæstens ord til
+leverandørens bekræftelse, med to tryk i back office. Plus ét øjeblik i huset: "tænd lyset
+ved poolen" sagt til iPad'en. Ikke pænt, men ægte.
 
 Fem arbejdsdage (onsdag til søndag). Mandag den 23. er hjemrejse og buffer.
 
@@ -16,13 +17,14 @@ Fem arbejdsdage (onsdag til søndag). Mandag den 23. er hjemrejse og buffer.
 - **Aftalerne mellem sporene er databasens funktioner,** ikke hinandens kode: `tap_approval`,
   `issue_confirmation_link`, `peek_confirmation_link`, `redeem_confirmation_link`. De findes og er testet.
 
-| Spor | Hvem                        | Ejer mapperne                                                | Leverer i ugen                                                      |
-| ---- | --------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------- |
-| A    | Erfaren (platform)          | `.github/`, `supabase/`, `tests/db/`, `src/lib/supabase/`    | Opsætning, login, database-klienter, review af alt med database     |
-| B    | Erfaren (back office)       | `src/app/app/godkendelser/`, `src/app/app/bestillinger/`     | Godkendelseskø med to tryk, bestillingsliste, "send til leverandør" |
-| C    | Erfaren eller øvet (butler) | `src/lib/butler/`, `src/app/api/butler/`                     | Gæstens besked → kladde og forslag fra Claude                       |
-| D    | Ny (leverandørsiden)        | `src/app/c/`, `src/messages/`                                | Bekræftelsesside på es/en/da, beskedtekster                         |
-| E    | Ny (villa og gæst)          | `src/app/app/villaer/`, `src/app/app/katalog/`, `src/app/g/` | Villa, faciliteter og katalog i back office, gæstens chat-side      |
+| Spor | Hvem                           | Ejer mapperne                                                | Leverer i ugen                                                                                                                                                                 |
+| ---- | ------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| A    | Erfaren (platform)             | `.github/`, `supabase/`, `tests/db/`, `src/lib/supabase/`    | Opsætning, login, database-klienter, review af alt med database                                                                                                                |
+| B    | Erfaren (back office)          | `src/app/app/godkendelser/`, `src/app/app/bestillinger/`     | Godkendelseskø med to tryk, bestillingsliste, "send til leverandør"                                                                                                            |
+| C    | Erfaren eller øvet (butler)    | `src/lib/butler/`, `src/app/api/butler/`                     | Stemmeagent (leverandør vælges onsdag) med faste værktøjer. Server-værktøjer som webhooks: husinfo, katalog, foreslå bestilling (`bookings` proposed), eskalér                 |
+| D    | Ny (leverandørsiden)           | `src/app/c/`, `src/messages/`                                | Bekræftelsesside på es/en/da, beskedtekster                                                                                                                                    |
+| E    | Ny (villa og gæst)             | `src/app/app/villaer/`, `src/app/app/katalog/`, `src/app/g/` | Villa, faciliteter og katalog i back office. Gæstens iPad-side (`/g/[token]`): stemmeknap fra spor C, kort med status                                                          |
+| H    | Huset (Magnus, Anker over SSH) | `pi/`                                                        | Home Assistant på Pi'en, gæste-API med hvidliste på HTTPS, ét lys. Tidsboks: højst én dag i alt, go/no-go fredag 16:30. Falder det, vises lyset fra Home Assistants egen skærm |
 
 D og E har hver en fast makker blandt A, B og C, som reviewer deres PR'er først.
 
@@ -30,37 +32,37 @@ D og E har hver en fast makker blandt A, B og C, som reviewer deres PR'er først
 
 ### Dag 1, onsdag 18.: alle har en merget PR
 
-| Spor | Formiddag                                                                           | Eftermiddag                                                                    |
-| ---- | ----------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| A    | [Opsætning](opsaetning.md): GitHub, Linear, Supabase, Vercel. Rulesettet slået til. | Supabase-klienter i `src/lib/supabase/` (bruger-session og server), login-side |
-| B    | Hjælper A. Prøver "første dag" som testperson.                                      | `/grill-me` om back office → `/to-spec` → `/to-tickets` i Linear               |
-| C    | Hjælper D og E i gang.                                                              | `/grill-me` om butleren → spec og opgaver. Anthropic-nøgle i Vercel.           |
-| D    | [Første dag](foerste-dag.md): første PR merget.                                     | Lokal Supabase op at køre. Læser `docs/erd.md` med sin makker.                 |
-| E    | [Første dag](foerste-dag.md): første PR merget.                                     | Lokal Supabase op at køre. Læser `docs/erd.md` med sin makker.                 |
+| Spor | Formiddag                                                     | Eftermiddag                                                                    |
+| ---- | ------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| A    | [Opsætning](opsaetning.md): GitHub, Linear, Supabase, Vercel. | Supabase-klienter i `src/lib/supabase/` (bruger-session og server), login-side |
+| B    | Hjælper A. Prøver "første dag" som testperson.                | `/grill-me` om back office → `/to-spec` → `/to-tickets` i Linear               |
+| C    | Hjælper D og E i gang.                                        | `/grill-me` om butleren → spec og opgaver. Anthropic-nøgle i Vercel.           |
+| D    | [Første dag](foerste-dag.md): første PR merget.               | Lokal Supabase op at køre. Læser `docs/erd.md` med sin makker.                 |
+| E    | [Første dag](foerste-dag.md): første PR merget.               | Lokal Supabase op at køre. Læser `docs/erd.md` med sin makker.                 |
 
-Færdig når: fem mergede "tilføj mig til holdet"-PR'er, og `main` kan ikke pushes til.
+Færdig når: fem mergede "tilføj mig til holdet"-PR'er, lefthook afviser push til main lokalt, og alle merges går via Squash and merge. Det rigtige ruleset slås til, når ejer og plan er valgt.
 
 ### Dag 2, torsdag 19.: skærme med seed-data
 
-| Spor | Opgaver                                                                                                         |
-| ---- | --------------------------------------------------------------------------------------------------------------- |
-| A    | Layout og navigation i back office (bag login). Genererede database-typer (`src/lib/database.types.ts`).        |
-| B    | Godkendelseskø: liste over ventende godkendelser fra seed. Vis bestilling eller kladde.                         |
-| C    | Serverfunktion: gæstebesked ind → Claude → kladde (`messages`) og forslag (`bookings`). Test med seed-samtalen. |
-| D    | Bekræftelsesside (`/c/[token]`): vis opgaven med `peek_confirmation_link`. Kun visning, ingen knapper endnu.    |
-| E    | Back office: vis villa og faciliteter. Ret en facilitet.                                                        |
+| Spor | Opgaver                                                                                                                                        |
+| ---- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| A    | Layout og navigation i back office (bag login). Genererede database-typer (`src/lib/database.types.ts`).                                       |
+| B    | Godkendelseskø: liste over ventende godkendelser fra seed. Vis bestilling eller kladde.                                                        |
+| C    | Serverfunktion: gæstens anmodning ind (tekst fra en testside) → Claude → kladde (`messages`) og forslag (`bookings`). Stemmen kobles på dag 3. |
+| D    | Bekræftelsesside (`/c/[token]`): vis opgaven med `peek_confirmation_link`. Kun visning, ingen knapper endnu.                                   |
+| E    | Back office: vis villa og faciliteter. Ret en facilitet.                                                                                       |
 
 Færdig når: hver person kan vise sin skærm i en preview kl. 16:30.
 
 ### Dag 3, fredag 20.: de enkelte led virker
 
-| Spor | Opgaver                                                                                    |
-| ---- | ------------------------------------------------------------------------------------------ |
-| A    | Realtime i back office (ny godkendelse dukker op). Hjælp og review.                        |
-| B    | To tryk (`tap_approval`), afvis (`reject_approval`), ret kladde før godkendelse.           |
-| C    | Butleren bruger katalog, priser og husmanual. Forslag til mersalg (`upsell_offers`).       |
-| D    | Knapperne Ja og Nej (`redeem_confirmation_link`), sider for brugt, udløbet og ukendt link. |
-| E    | Katalog: services og priser pr. villa. Gæstens chat-side (`/g/[token]`): vis samtalen.     |
+| Spor | Opgaver                                                                                               |
+| ---- | ----------------------------------------------------------------------------------------------------- |
+| A    | Realtime i back office (ny godkendelse dukker op). Hjælp og review.                                   |
+| B    | To tryk (`tap_approval`), afvis (`reject_approval`), ret kladde før godkendelse.                      |
+| C    | Stemmeagenten kalder foreslå-bestilling via webhook. Svartid målt. Butleren bruger katalog og priser. |
+| D    | Knapperne Ja og Nej (`redeem_confirmation_link`), sider for brugt, udløbet og ukendt link.            |
+| E    | Katalog: services og priser pr. villa. Gæstens chat-side (`/g/[token]`): vis samtalen.                |
 
 Færdig når: to tryk flytter en bestilling til godkendt, og et link kan bekræftes præcis én gang i en preview.
 
@@ -72,7 +74,7 @@ Færdig når: to tryk flytter en bestilling til godkendt, og et link kan bekræf
 | B    | "Send til leverandør" (`issue_confirmation_link`). Bestillingsliste med status og historik.             |
 | C    | Godkendt svar sendes til gæsten. Gem model og prompt-version. Et lille sæt prøvebeskeder som test.      |
 | D    | Oversættelser es/en/da for bekræftelsesside og beskeder. Afprøv på en rigtig telefon.                   |
-| E    | Gæsten kan skrive i chatten. Beskeden lander i back office.                                             |
+| E    | Gæsten taler til iPad'en, forslaget lander i back office. Status vises som kort.                        |
 
 Færdig når: én bestilling går fra gæstens besked til leverandørens ja i en preview, uden håndholdt SQL.
 
@@ -99,6 +101,6 @@ Buffer. Ingen merges, medmindre noget er i stykker.
 
 ## Det gør vi ikke i ugen
 
-Betaling, WhatsApp, flere organisationer i brugerfladen, Home Assistant, pænt design, og
+Betaling, WhatsApp, flere organisationer i brugerfladen, Home Assistant ud over ét lys, pænt design, og
 at lade butleren svare uden godkendelse. Skemaet har plads til det hele, men ugen handler om
 at få kæden til at hænge sammen.

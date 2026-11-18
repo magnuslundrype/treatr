@@ -31,7 +31,7 @@ Bruger du Windows, så arbejd i WSL (Ubuntu). Så virker alle kommandoer som bes
 ### 1. Hent koden (5 min)
 
 ```bash
-gh repo clone <organisation>/treatr
+gh repo clone magnuslundrype/treatr
 cd treatr
 npm install
 ```
@@ -119,7 +119,7 @@ Nu er du klar til en rigtig opgave. Læs [Sådan arbejder vi](saadan-arbejder-vi
 
 ```bash
 cp .env.example .env.local
-npx supabase start        # første gang henter den en del. Docker Desktop skal køre.
+npx supabase start        # første gang henter den en del. Colima (Mac) eller Docker Desktop (Windows) skal køre.
 npx supabase status       # kopiér "API URL", "anon key" og "service_role key" over i .env.local
 npm run dev
 ```
@@ -129,11 +129,11 @@ npm run dev
 
 ## Hvis noget driller
 
-| Det sker                              | Gør dette                                                                                         |
-| ------------------------------------- | ------------------------------------------------------------------------------------------------- |
-| "Du står på main" når du committer    | Lav en branch: `git switch -c <navn fra Linear>`. Dine ændringer følger med.                      |
-| `git push` bliver afvist              | Du er nok på `main`. Se ovenfor.                                                                  |
-| `PR-regler` er rød                    | Tryk på den og læs beskeden. Det er altid Linear-nummer, bevis, rollback eller størrelse.         |
-| `CI` er rød                           | Tryk på det røde job, læs de sidste linjer, og giv dem til agenten: "CI fejler med dette: ..."    |
-| Agenten siger "BLOKERET af guard.mjs" | Den prøvede noget, den ikke må. Læs beskeden. Det er som regel en fejl i dens plan, ikke hos dig. |
-| `npx supabase start` fejler           | Kører Docker Desktop? Ellers skriv i Mattermost. Du kan godt lave din første PR uden.             |
+| Det sker                              | Gør dette                                                                                                          |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| "Du står på main" når du committer    | Lav en branch: `git switch -c <navn fra Linear>`. Dine ændringer følger med.                                       |
+| `git push` bliver afvist              | Du er nok på `main`. Se ovenfor.                                                                                   |
+| `PR-regler` er rød                    | Tryk på den og læs beskeden. Det er altid Linear-nummer, bevis, rollback eller størrelse.                          |
+| `CI` er rød                           | Tryk på det røde job, læs de sidste linjer, og giv dem til agenten: "CI fejler med dette: ..."                     |
+| Agenten siger "BLOKERET af guard.mjs" | Den prøvede noget, den ikke må. Læs beskeden. Det er som regel en fejl i dens plan, ikke hos dig.                  |
+| `npx supabase start` fejler           | Kører Colima (Mac) eller Docker Desktop (Windows)? Ellers skriv i Mattermost. Du kan godt lave din første PR uden. |
