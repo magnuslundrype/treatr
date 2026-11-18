@@ -11,7 +11,7 @@ Det her tager tid at hente, så gør det på godt internet:
 - [ ] Node 22 eller nyere: `node --version` viser v22 eller højere
 - [ ] GitHub CLI: `gh --version` virker, og `gh auth login` er gennemført
 - [ ] Claude Code (eller den agent, du bruger): `claude --version` virker
-- [ ] Docker Desktop er installeret (bruges først efter din første PR)
+- [ ] Docker er installeret: Colima på Mac (`brew install colima docker && colima start`), Docker Desktop på Windows (bruges først efter din første PR)
 - [ ] Du har sagt ja til invitationerne til GitHub, Linear og Mattermost
 
 Bruger du Windows, så arbejd i WSL (Ubuntu). Så virker alle kommandoer som beskrevet.
