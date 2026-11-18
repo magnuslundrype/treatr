@@ -1,7 +1,7 @@
 # Treatr
 
-AI-butler til luksusvillaer. Gæsten skriver, butleren foreslår, et menneske godkender med
-to tryk, og leverandøren bekræfter via et link uden login.
+AI-butler til luksusvillaer. Gæsten taler med butleren, Hermes koordinerer back office og
+eskalerer kun det, den ikke selv kan, og leverandøren bekræfter via et link uden login.
 
 | Du vil                                    | Læs                                                      |
 | ----------------------------------------- | -------------------------------------------------------- |
